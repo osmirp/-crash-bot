@@ -6,44 +6,24 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Crash Bot — Paper v2</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#0b0f14;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.app{max-width:560px;margin:auto;padding:18px 14px 35px}
-.card{background:#151b22;border:1px solid #27313b;border-radius:16px;padding:16px;margin-bottom:12px}
-h1{font-size:25px;margin:0}
-h2{font-size:19px;margin:0 0 5px}
-.sub{color:#9ca8b5;font-size:13px;margin-top:5px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.label{font-size:12px;color:#aeb8c4}
+*{box-sizing:border-box}body{margin:0;background:#0b0f14;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:560px;margin:auto;padding:18px 14px 35px}.card{background:#151b22;border:1px solid #27313b;border-radius:16px;padding:16px;margin-bottom:12px}
+h1{font-size:25px;margin:0}h2{font-size:19px;margin:0 0 5px}.sub{color:#9ca8b5;font-size:13px;margin-top:5px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.label{font-size:12px;color:#aeb8c4}
 input,textarea{width:100%;margin-top:5px;background:#0d1218;border:1px solid #34404c;color:white;border-radius:10px;padding:12px;font-size:16px}
-textarea{resize:vertical;line-height:1.4}
-button{border:0;border-radius:11px;padding:12px;width:100%;font-size:15px;font-weight:700;background:#263441;color:#fff}
-.primary{background:#2764a1}
-.danger{background:#6b2930}
+textarea{resize:vertical;line-height:1.4}button{border:0;border-radius:11px;padding:12px;width:100%;font-size:15px;font-weight:700;background:#263441;color:#fff}
+.primary{background:#2764a1}.danger{background:#6b2930}.secondary{background:#34404c}
 .signal{text-align:center;border-radius:14px;padding:18px;margin-top:12px;font-weight:800;font-size:24px;background:#242c34}
-.signal.on{background:#174d38;color:#8df0bd}
-.signal.off{background:#3a2529;color:#ffabb0}
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-.stat{background:#0e1319;border-radius:11px;padding:10px}
-.stat small{display:block;color:#929daa}
-.stat b{font-size:18px}
-.history{display:flex;flex-wrap:wrap;gap:6px}
-.pill{padding:6px 8px;border-radius:8px;background:#29313a;font-size:12px}
-.low{background:#63343b}
-.high{background:#27553f}
-table{width:100%;border-collapse:collapse;font-size:12px}
-td,th{padding:7px 4px;border-bottom:1px solid #27313b;text-align:right}
-td:first-child,th:first-child{text-align:left}
-.note{font-size:12px;color:#9ca8b5;line-height:1.45}
+.signal.on{background:#174d38;color:#8df0bd}.signal.off{background:#3a2529;color:#ffabb0}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.stat{background:#0e1319;border-radius:11px;padding:10px}
+.stat small{display:block;color:#929daa}.stat b{font-size:18px}.history{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:6px 8px;border-radius:8px;background:#29313a;font-size:12px}.low{background:#63343b}.high{background:#27553f}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:7px 4px;border-bottom:1px solid #27313b;text-align:right}
+td:first-child,th:first-child{text-align:left}.note{font-size:12px;color:#9ca8b5;line-height:1.45}
 .tag{display:inline-block;padding:4px 7px;border-radius:7px;background:#27313b;font-size:11px;margin-top:7px}
-.analysis-wrap{overflow:auto}
-.analysis-table{min-width:760px}
-.analysis-table th{position:sticky;top:0;background:#151b22}
-.analysis-table .positive{color:#8df0bd}
-.analysis-table .negative{color:#ffabb0}
-.analysis-table .neutral{color:#f5f7fa}
-.analysis-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.muted{color:#7f8a96}
+.analysis-wrap{overflow:auto}.analysis-table{min-width:760px}.analysis-table th{position:sticky;top:0;background:#151b22}
+.positive{color:#8df0bd}.negative{color:#ffabb0}.neutral{color:#f5f7fa}
+.controls2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -53,7 +33,7 @@ td:first-child,th:first-child{text-align:left}
 <h1>🤖 Crash Bot — Paper v2</h1>
 <div class="sub">Histórico carregado • simulador offline • sem apostas reais</div>
 <div id="signal" class="signal off">SEM SINAL</div>
-<div class="tag" id="counttag">0 resultados carregados</div>
+<div class="tag" id="counttag">215 resultados carregados</div>
 </div>
 
 <div class="card">
@@ -71,17 +51,13 @@ td:first-child,th:first-child{text-align:left}
 <input id="newx" type="number" placeholder="Ex.: 1,42" step=".01" min="1">
 <button class="primary" onclick="add()">Adicionar</button>
 </div>
-
 <div class="label" style="margin-top:14px">Adicionar várias rodadas de uma vez</div>
 <textarea id="bulk" rows="5" placeholder="Cole aqui, por exemplo:
-14.03, 5.43, 5.70, 169.30, 6.86, 1.49
-
-Pode usar vírgula, ponto, espaço ou quebra de linha entre os resultados."></textarea>
-<div style="height:8px"></div>
-<button class="primary" onclick="addBulk()">Adicionar todos</button>
+14.03, 5.43, 5.70, 169.30, 6.86, 1.49"></textarea>
+<div style="height:8px"></div><button class="primary" onclick="addBulk()">Adicionar todos</button>
 <div id="bulkmsg" class="note" style="margin-top:8px"></div>
-<div style="height:8px"></div>
-<button class="danger" onclick="resetAll()">Começar nova amostra</button>
+<div style="height:8px"></div><button class="secondary" onclick="copyHistory()">📋 Copiar histórico completo</button>
+<div style="height:8px"></div><button class="danger" onclick="resetAll()">Começar nova amostra</button>
 </div>
 
 <div class="card">
@@ -95,115 +71,59 @@ Pode usar vírgula, ponto, espaço ou quebra de linha entre os resultados."></te
 </div>
 </div>
 
-<!-- NOVO: análise automática -->
 <div class="card">
 <h2>📊 Análise automática</h2>
-<div class="sub">Testa várias sequências e metas sobre o mesmo histórico, usando exatamente a lógica do simulador.</div>
-
-<div class="analysis-controls">
-<div>
-<div class="label">Sequência máxima</div>
-<input id="maxTrigger" type="number" value="6" min="1" max="10">
+<div class="sub">Testa todas as combinações de sequência e meta sobre o histórico atual.</div>
+<div class="controls2">
+<div><div class="label">Sequência máxima</div><input id="maxTrigger" type="number" value="6" min="1" max="10"></div>
+<div><div class="label">Metas (x)</div><input id="targets" type="text" value="1.50 1.80 2.00 2.50 3.00"></div>
 </div>
-<div>
-<div class="label">Metas (x)</div>
-<input id="targets" type="text" value="1.50, 1.80, 2.00, 2.50, 3.00">
-</div>
-</div>
-
 <div style="height:8px"></div>
 <button class="primary" onclick="runAnalysis()">Executar análise</button>
-
 <div id="analysisMsg" class="note" style="margin-top:8px"></div>
-
 <div class="analysis-wrap" style="margin-top:10px">
 <table class="analysis-table">
-<thead>
-<tr>
-<th>Seq.</th>
-<th>Meta</th>
-<th>Entradas</th>
-<th>Acertos</th>
-<th>Perdas</th>
-<th>Taxa</th>
-<th>Saldo</th>
-<th>Resultado</th>
-<th>Máx. perdas</th>
-<th>Drawdown</th>
-</tr>
-</thead>
+<thead><tr><th>Seq.</th><th>Meta</th><th>Entradas</th><th>Acertos</th><th>Perdas</th><th>Taxa</th><th>Saldo</th><th>Resultado</th><th>Máx. perdas</th><th>Drawdown</th></tr></thead>
 <tbody id="analysisRows"></tbody>
 </table>
 </div>
-
-<div class="note" style="margin-top:10px">
-<b>Como ler:</b> cada linha é apenas um teste histórico. “Resultado” é o saldo final menos a banca inicial. “Drawdown” é a maior queda da banca a partir de um pico anterior.
-<br><br>
-<b>Importante:</b> os números descrevem esta amostra histórica e não significam que uma sequência aumente a capacidade de prever a próxima rodada.
-</div>
+<div class="note" style="margin-top:10px"><b>Importante:</b> os resultados são apenas estatísticas desta amostra histórica; não são garantia de previsão da próxima rodada.</div>
 </div>
 
-<div class="card">
-<div class="label">Histórico</div>
-<div id="history" class="history" style="margin-top:9px"></div>
-</div>
+<div class="card"><div class="label">Histórico</div><div id="history" class="history" style="margin-top:9px"></div></div>
 
 <div class="card">
 <div class="label">Registros</div>
 <div style="overflow:auto;margin-top:8px">
-<table>
-<thead><tr><th>#</th><th>Crash</th><th>Sinal</th><th>Resultado</th></tr></thead>
-<tbody id="rows"></tbody>
-</table>
+<table><thead><tr><th>#</th><th>Crash</th><th>Sinal</th><th>Resultado</th></tr></thead><tbody id="rows"></tbody></table>
 </div>
 </div>
 
 <div class="card note">
-<b>Como testar:</b> depois que uma nova rodada terminar, digite o multiplicador final no campo acima e toque em <b>Adicionar</b>. O bot recalcula o histórico e a análise automática.
-<br><br>
-<b>Persistência:</b> o histórico agora é salvo no navegador deste dispositivo para não desaparecer ao recarregar a página.
-<br><br>
-<b>Importante:</b> o sinal é uma hipótese experimental. Ele não garante previsão do próximo resultado.
+<b>Como testar:</b> depois de uma rodada terminar, digite o multiplicador final e toque em <b>Adicionar</b>. O histórico e a análise são recalculados.
+<br><br><b>Segurança dos dados:</b> o histórico é salvo no navegador e há um botão para copiar a sequência completa.
 </div>
 
 </div>
 
 <script>
-const initial=[
-1.68,4.28,1.44,1.13,2.36,2.41,9.30,1.00,2.30,1.07,1.00,9.70,2.58,1.00,
-1.00,5.80,1.27,28.27,12.21,1.11,1.28,1.06,20.87,1.13,1.26
-];
-
-const STORAGE_KEY='crashbot-paper-v2-history';
-let data=loadData();
+const initial=[1.68,4.28,1.44,1.13,2.36,2.41,9.3,1,2.3,1.07,1,9.7,2.58,1,1,5.8,1.27,28.27,12.21,1.11,1.28,1.06,20.87,1.13,1.26,1.9,8.73,77.32,1.81,1.77,1,1.04,1.52,5.47,22.55,4.97,1,21.07,1.24,1.26,1.2,6.7,1,23.78,1.91,2.45,1.46,1.25,10.69,1.11,2.62,2.46,21.15,8.35,1.26,2.2,1.4,2.83,48.88,1.69,3.32,1.14,3.73,1.41,1.44,1.39,1.22,3.75,1.93,1.08,2.48,2.41,1.22,1.99,1.48,11.1,8.21,1,2.78,13.54,1.52,2.37,2.84,1.48,2.43,2.45,1.74,1.49,6.86,169.3,5.7,5.43,14.03,1,9845.37,1.9,2.8,2.45,1.91,1,1.46,1.2,3.59,2.63,1.21,1.09,1.22,2.94,3.68,4.93,1.57,1,1.19,28.59,1.07,3.73,2.77,1.58,9.98,2.58,1.36,2.04,1.24,1.11,1.19,6.93,1.42,2.73,4.42,5.86,1.3,2.37,525.68,1.82,5.95,4.88,6.81,1.75,1.01,2.49,1,1.19,2.42,1.13,1.16,1.94,1.92,1.84,1,1.71,13.58,1.61,1.91,1.29,1.69,1.03,753.93,1.77,1.33,1.21,1.6,1.53,1.21,1.62,2.33,1,5.84,1.05,1.56,1.16,1,1.1,1,10.42,1.16,37.89,1.06,1.18,1,1.65,1.37,1.39,1.36,3.24,2.53,2.86,1.55,2.36,1.19,3.45,1221.82,2.04,25.97,3.18,9.95,1.28,9.09,13.74,1.42,2.72,1.54,1,5.37,1.12,2.37,1,1.89,1.4,3.19,18.95,15.37,1.88,1.62,4.03,1.35];
+const STORAGE_KEY='crashbot-paper-v2-history-215-v1';
 
 function el(id){return document.getElementById(id)}
+function num(id,def){const x=parseFloat(String(el(id).value).replace(',','.'));return Number.isFinite(x)?x:def}
+function money(x){return 'R$ '+x.toFixed(2).replace('.',',')}
+function validArray(a){return Array.isArray(a)?a.map(Number).filter(x=>Number.isFinite(x)&&x>=1):[]}
 
-function num(id,def){
- const x=parseFloat(String(el(id).value).replace(',','.'));
- return Number.isFinite(x)?x:def;
-}
+let data=(()=>{
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+    const v=validArray(saved);
+    return v.length?v:initial.slice();
+  }catch(e){return initial.slice()}
+})();
 
-function money(x){
- return 'R$ '+x.toFixed(2).replace('.',',');
-}
-
-function saveData(){
- try{
-   localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
- }catch(e){}
-}
-
-function loadData(){
- try{
-   const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
-   if(Array.isArray(saved)){
-     const valid=saved.map(Number).filter(x=>Number.isFinite(x)&&x>=1);
-     if(valid.length)return valid;
-   }
- }catch(e){}
- return initial.slice();
-}
+function saveData(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){}}
 
 function signalAt(i,series=data,t=null){
  const trigger=t===null?Math.max(1,Math.floor(num('trigger',2))):t;
@@ -211,235 +131,100 @@ function signalAt(i,series=data,t=null){
  return series.slice(i-trigger,i).every(x=>x<1.5);
 }
 
-/*
- Simula exatamente a mesma regra do painel principal:
- - sinal na rodada i se as trigger rodadas anteriores forem < 1.50x
- - a entrada acontece na própria rodada i
- - sinais podem ocorrer em rodadas consecutivas quando a condição continuar verdadeira
-*/
 function simulate(series,trigger,target,stake,start){
- let bal=start;
- let entries=0,wins=0,losses=0;
- let streak=0,maxStreak=0;
- let peak=bal,maxDrawdown=0;
-
+ let bal=start,entries=0,wins=0,losses=0,streak=0,maxStreak=0,peak=bal,maxDD=0;
  for(let i=0;i<series.length;i++){
    if(!signalAt(i,series,trigger))continue;
-
    entries++;
-
-   if(series[i]>=target){
-     bal+=stake*(target-1);
-     wins++;
-     streak=0;
-   }else{
-     bal-=stake;
-     losses++;
-     streak++;
-     maxStreak=Math.max(maxStreak,streak);
-   }
-
-   if(bal>peak)peak=bal;
-   const dd=peak-bal;
-   if(dd>maxDrawdown)maxDrawdown=dd;
+   if(series[i]>=target){bal+=stake*(target-1);wins++;streak=0}
+   else{bal-=stake;losses++;streak++;maxStreak=Math.max(maxStreak,streak)}
+   peak=Math.max(peak,bal);
+   maxDD=Math.max(maxDD,peak-bal);
  }
-
- return {
-   entries,wins,losses,bal,
-   maxStreak,maxDrawdown,
-   hitRate:entries?wins/entries*100:0,
-   net:bal-start
- };
+ return {entries,wins,losses,bal,maxStreak,maxDD,hitRate:entries?wins/entries*100:0,net:bal-start};
 }
 
 function parseTargets(){
- const raw=String(el('targets').value||'');
- return [...new Set(
-   raw.split(/[,;\s]+/)
-     .map(v=>parseFloat(v.replace(',','.')))
-     .filter(v=>Number.isFinite(v)&&v>=1.01)
- )];
+ const raw=String(el('targets').value||'').trim();
+ return [...new Set(raw.split(/[;\s]+/).map(v=>parseFloat(v.replace(',','.'))).filter(v=>Number.isFinite(v)&&v>=1.01))];
 }
 
 function runAnalysis(){
- const maxTrigger=Math.min(10,Math.max(1,Math.floor(num('maxTrigger',6))));
+ const maxT=Math.min(10,Math.max(1,Math.floor(num('maxTrigger',6))));
  const targets=parseTargets();
-
- if(!data.length){
-   el('analysisMsg').textContent='Adicione resultados antes de executar a análise.';
-   el('analysisRows').innerHTML='';
-   return;
+ const stake=num('stake',1),start=num('bank',100);
+ let html='',count=0;
+ for(let t=1;t<=maxT;t++)for(const target of targets){
+   const r=simulate(data,t,target,stake,start);
+   const cls=r.net>0?'positive':r.net<0?'negative':'neutral';
+   html+=`<tr><td>${t}</td><td>${target.toFixed(2)}x</td><td>${r.entries}</td><td>${r.wins}</td><td>${r.losses}</td><td>${r.hitRate.toFixed(2)}%</td><td>${money(r.bal)}</td><td class="${cls}">${r.net>=0?'+':''}${money(r.net)}</td><td>${r.maxStreak}</td><td>${money(r.maxDD)}</td></tr>`;
+   count++;
  }
-
- if(!targets.length){
-   el('analysisMsg').textContent='Digite pelo menos uma meta válida, por exemplo: 1.50, 1.80, 2.00, 2.50, 3.00';
-   el('analysisRows').innerHTML='';
-   return;
- }
-
- const stake=num('stake',1);
- const start=num('bank',100);
- let html='';
- let count=0;
-
- for(let trigger=1;trigger<=maxTrigger;trigger++){
-   for(const target of targets){
-     const r=simulate(data,trigger,target,stake,start);
-     const cls=r.net>0?'positive':r.net<0?'negative':'neutral';
-
-     html+=`<tr>
-       <td>${trigger}</td>
-       <td>${target.toFixed(2)}x</td>
-       <td>${r.entries}</td>
-       <td>${r.wins}</td>
-       <td>${r.losses}</td>
-       <td>${r.hitRate.toFixed(2)}%</td>
-       <td>${money(r.bal)}</td>
-       <td class="${cls}">${r.net>=0?'+':''}${money(r.net)}</td>
-       <td>${r.maxStreak}</td>
-       <td>${money(r.maxDrawdown)}</td>
-     </tr>`;
-
-     count++;
-   }
- }
-
  el('analysisRows').innerHTML=html;
  el('analysisMsg').textContent=`${count} combinações analisadas em ${data.length} rodadas.`;
 }
 
 function render(){
- const target=num('target',2);
- const stake=num('stake',1);
- const start=num('bank',100);
-
- let bal=start,entries=0,wins=0,losses=0,streak=0,maxStreak=0;
- let rows='';
-
+ const target=num('target',2),stake=num('stake',1),start=num('bank',100);
+ let bal=start,entries=0,wins=0,losses=0,streak=0,maxStreak=0,rows='';
  data.forEach((x,i)=>{
-   const sig=signalAt(i);
-   let res='—';
-
+   const sig=signalAt(i);let res='—';
    if(sig){
      entries++;
-
-     if(x>=target){
-       bal+=stake*(target-1);
-       wins++;
-       streak=0;
-       res='ACERTO';
-     }else{
-       bal-=stake;
-       losses++;
-       streak++;
-       maxStreak=Math.max(maxStreak,streak);
-       res='PERDA';
-     }
+     if(x>=target){bal+=stake*(target-1);wins++;streak=0;res='ACERTO'}
+     else{bal-=stake;losses++;streak++;maxStreak=Math.max(maxStreak,streak);res='PERDA'}
    }
-
-   rows+=`<tr>
-     <td>${i+1}</td>
-     <td>${x.toFixed(2)}x</td>
-     <td>${sig?'ENTRAR':'—'}</td>
-     <td>${res}</td>
-   </tr>`;
+   rows+=`<tr><td>${i+1}</td><td>${x.toFixed(2)}x</td><td>${sig?'ENTRAR':'—'}</td><td>${res}</td></tr>`;
  });
-
  const current=signalAt(data.length);
-
  el('signal').textContent=current?'🟢 SINAL ATIVADO':'⚪ SEM SINAL';
  el('signal').className='signal '+(current?'on':'off');
  el('n').textContent=data.length;
  el('counttag').textContent=data.length+' resultados carregados';
- el('entries').textContent=entries;
- el('wins').textContent=wins;
- el('losses').textContent=losses;
- el('balance').textContent=money(bal);
- el('streak').textContent=maxStreak;
+ el('entries').textContent=entries;el('wins').textContent=wins;el('losses').textContent=losses;
+ el('balance').textContent=money(bal);el('streak').textContent=maxStreak;
  el('rows').innerHTML=rows;
-
- el('history').innerHTML=data.map(x=>
-   `<span class="pill ${x<1.5?'low':x>=5?'high':''}">${x.toFixed(2)}x</span>`
- ).join('');
-
+ el('history').innerHTML=data.map(x=>`<span class="pill ${x<1.5?'low':x>=5?'high':''}">${x.toFixed(2)}x</span>`).join('');
  runAnalysis();
+ saveData();
 }
 
 function add(){
- const raw=String(el('newx').value).replace(',','.');
- const x=parseFloat(raw);
-
- if(!Number.isFinite(x)||x<1){
-   alert('Digite um multiplicador válido, por exemplo 1,42.');
-   return;
- }
-
- data.push(x);
- saveData();
- el('newx').value='';
- render();
+ const x=parseFloat(String(el('newx').value).replace(',','.'));
+ if(!Number.isFinite(x)||x<1){alert('Digite um multiplicador válido.');return}
+ data.push(x);el('newx').value='';render();
 }
 
 function addBulk(){
  const raw=String(el('bulk').value||'').trim();
-
- if(!raw){
-   alert('Cole primeiro os resultados.');
-   return;
- }
-
- /*
-   Aceita:
-   - 1.42
-   - 1,42
-   - números separados por vírgula, espaço, ponto e vírgula ou quebra de linha
- */
- const normalized=raw
-   .replace(/(\d),(\d)/g,'$1.$2')
-   .replace(/[;\n\r\t]+/g,' ');
-
- const tokens=normalized.split(/[, ]+/)
-   .map(x=>x.trim())
-   .filter(Boolean);
-
- const values=[];
- const invalid=[];
-
- for(const token of tokens){
-   const x=parseFloat(token.replace(',','.'));
-   if(Number.isFinite(x)&&x>=1)values.push(x);
-   else invalid.push(token);
- }
-
- if(!values.length){
-   alert('Não encontrei multiplicadores válidos. Exemplo: 1,42 2,37 14,03');
-   return;
- }
-
- data.push(...values);
- saveData();
-
- el('bulk').value='';
- el('bulkmsg').textContent=
-   `${values.length} resultado(s) adicionado(s). Total: ${data.length} rodadas.`+
-   (invalid.length?` Ignorados: ${invalid.length}.`:'');
-
+ if(!raw){alert('Cole primeiro os resultados.');return}
+ const normalized=raw.replace(/(\d),(\d)/g,'$1.$2').replace(/[;\n\r\t]+/g,' ');
+ const tokens=normalized.split(/[, ]+/).map(x=>x.trim()).filter(Boolean);
+ const values=[],invalid=[];
+ for(const token of tokens){const x=parseFloat(token.replace(',','.'));if(Number.isFinite(x)&&x>=1)values.push(x);else invalid.push(token)}
+ if(!values.length){alert('Não encontrei multiplicadores válidos.');return}
+ data.push(...values);el('bulk').value='';
+ el('bulkmsg').textContent=`${values.length} resultado(s) adicionado(s). Total: ${data.length} rodadas.`+(invalid.length?` Ignorados: ${invalid.length}.`:'');
  render();
 }
 
-function resetAll(){
- if(confirm('Isso vai apagar todos os resultados salvos neste navegador e começar uma nova amostra. Continuar?')){
-   data=[];
-   saveData();
-   el('bulk').value='';
-   el('bulkmsg').textContent='';
-   render();
+async function copyHistory(){
+ const text=data.map(x=>x.toFixed(2)).join(', ');
+ try{
+   await navigator.clipboard.writeText(text);
+   el('bulkmsg').textContent='Histórico completo copiado para a área de transferência.';
+ }catch(e){
+   prompt('Copie o histórico completo:',text);
  }
 }
 
-['bank','stake','trigger','target','maxTrigger','targets']
-.forEach(id=>el(id).addEventListener('input',render));
+function resetAll(){
+ if(confirm('Isso vai apagar o histórico salvo e começar uma nova amostra. Continuar?')){
+   data=[];saveData();el('bulk').value='';el('bulkmsg').textContent='';render();
+ }
+}
 
+['bank','stake','trigger','target','maxTrigger','targets'].forEach(id=>el(id).addEventListener('input',render));
 render();
 </script>
 </body>
