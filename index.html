@@ -9,7 +9,7 @@
 *{box-sizing:border-box}body{margin:0;background:#0b0f14;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .app{max-width:560px;margin:auto;padding:18px 14px 35px}.card{background:#151b22;border:1px solid #27313b;border-radius:16px;padding:16px;margin-bottom:12px}
 h1{font-size:25px;margin:0}.sub{color:#9ca8b5;font-size:13px;margin-top:5px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.label{font-size:12px;color:#aeb8c4}input{width:100%;margin-top:5px;background:#0d1218;border:1px solid #34404c;color:white;border-radius:10px;padding:12px;font-size:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.label{font-size:12px;color:#aeb8c4}input,textarea{width:100%;margin-top:5px;background:#0d1218;border:1px solid #34404c;color:white;border-radius:10px;padding:12px;font-size:16px}textarea{resize:vertical;line-height:1.4}
 button{border:0;border-radius:11px;padding:12px;width:100%;font-size:15px;font-weight:700;background:#263441;color:#fff}.primary{background:#2764a1}.danger{background:#6b2930}
 .signal{text-align:center;border-radius:14px;padding:18px;margin-top:12px;font-weight:800;font-size:24px;background:#242c34}.signal.on{background:#174d38;color:#8df0bd}.signal.off{background:#3a2529;color:#ffabb0}
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.stat{background:#0e1319;border-radius:11px;padding:10px}.stat small{display:block;color:#929daa}.stat b{font-size:18px}
@@ -37,11 +37,18 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:7px 4px;b
 </div>
 
 <div class="card">
-<div class="label">Novo resultado final da rodada</div>
+<div class="label">Adicionar uma rodada</div>
 <div style="display:grid;grid-template-columns:1fr 100px;gap:8px;margin-top:5px">
 <input id="newx" type="number" placeholder="Ex.: 1,42" step=".01" min="1">
 <button class="primary" onclick="add()">Adicionar</button>
 </div>
+<div class="label" style="margin-top:14px">Adicionar várias rodadas de uma vez</div>
+<textarea id="bulk" rows="5" placeholder="Cole aqui, por exemplo:
+14.03, 5.43, 5.70, 169.30, 6.86, 1.49
+
+Pode usar vírgula, ponto, espaço ou quebra de linha entre os resultados."></textarea>
+<div style="height:8px"></div><button class="primary" onclick="addBulk()">Adicionar todos</button>
+<div id="bulkmsg" class="note" style="margin-top:8px"></div>
 <div style="height:8px"></div><button class="danger" onclick="resetAll()">Começar nova amostra</button>
 </div>
 
@@ -114,8 +121,26 @@ function add(){
  if(!Number.isFinite(x)||x<1){alert('Digite um multiplicador válido, por exemplo 1,42.');return}
  data.push(x);el('newx').value='';render();
 }
+function addBulk(){
+ const raw=String(el('bulk').value||'').trim();
+ if(!raw){alert('Cole primeiro os resultados.');return}
+ // Aceita resultados separados por vírgula, ponto e vírgula, espaços ou quebras de linha.
+ // Para números no formato brasileiro, converte vírgula decimal quando ela estiver entre dígitos.
+ const normalized=raw.replace(/(\d),(\d)/g,'$1.$2').replace(/[;\n\r\t]+/g,' ');
+ const tokens=normalized.split(/[, ]+/).map(x=>x.trim()).filter(Boolean);
+ const values=[]; const invalid=[];
+ for(const token of tokens){
+   const x=parseFloat(token.replace(',','.'));
+   if(Number.isFinite(x)&&x>=1) values.push(x); else invalid.push(token);
+ }
+ if(!values.length){alert('Não encontrei multiplicadores válidos. Exemplo: 1,42 2,37 14,03');return}
+ data.push(...values);
+ el('bulk').value='';
+ el('bulkmsg').textContent=`${values.length} resultado(s) adicionado(s). Total: ${data.length} rodadas.`+(invalid.length?` Ignorados: ${invalid.length}.`:'');
+ render();
+}
 function resetAll(){
- if(confirm('Isso vai apagar os 25 resultados e começar uma nova amostra. Continuar?')){data=[];render()}
+ if(confirm('Isso vai apagar todos os resultados e começar uma nova amostra. Continuar?')){data=[];el('bulk').value='';el('bulkmsg').textContent='';render()}
 }
 ['bank','stake','trigger','target'].forEach(id=>el(id).addEventListener('input',render));
 render();
