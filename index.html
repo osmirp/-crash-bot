@@ -77,17 +77,34 @@ td:first-child,th:first-child{text-align:left}.note{font-size:12px;color:#9ca8b5
 <div class="controls2">
 <div><div class="label">Sequência máxima</div><input id="maxTrigger" type="number" value="6" min="1" max="10"></div>
 <div><div class="label">Metas (x)</div><input id="targets" type="text" value="1.50 1.80 2.00 2.50 3.00"></div>
+<div><div class="label">Treino (%)</div><input id="trainPct" type="number" value="70" min="50" max="90" step="5"></div>
+<div><div class="label">Modo</div><select id="analysisMode" style="width:100%;margin-top:5px;background:#0d1218;border:1px solid #34404c;color:white;border-radius:10px;padding:12px;font-size:16px">
+<option value="both">Treino + validação</option>
+<option value="full">Histórico completo</option>
+</select></div>
 </div>
 <div style="height:8px"></div>
 <button class="primary" onclick="runAnalysis()">Executar análise</button>
 <div id="analysisMsg" class="note" style="margin-top:8px"></div>
 <div class="analysis-wrap" style="margin-top:10px">
 <table class="analysis-table">
-<thead><tr><th>Seq.</th><th>Meta</th><th>Entradas</th><th>Acertos</th><th>Perdas</th><th>Taxa</th><th>Saldo</th><th>Resultado</th><th>Máx. perdas</th><th>Drawdown</th></tr></thead>
+<thead><tr>
+<th>Seq.</th><th>Meta</th>
+<th colspan="2">TREINO</th><th colspan="2">VALIDAÇÃO</th>
+<th>Taxa V.</th><th>Saldo V.</th><th>Resultado V.</th><th>Máx. perdas V.</th><th>Drawdown V.</th>
+</tr>
+<tr>
+<th></th><th></th><th>Entr.</th><th>Acert.</th><th>Entr.</th><th>Acert.</th>
+<th></th><th></th><th></th><th></th><th></th>
+</tr></thead>
 <tbody id="analysisRows"></tbody>
 </table>
 </div>
-<div class="note" style="margin-top:10px"><b>Importante:</b> os resultados são apenas estatísticas desta amostra histórica; não são garantia de previsão da próxima rodada.</div>
+<div class="note" style="margin-top:10px">
+<b>Como funciona:</b> por padrão, os primeiros 70% do histórico formam o bloco de desenvolvimento (treino) e os 30% finais formam a validação. A validação é calculada separadamente, sem reutilizar o resultado do treino.
+<br><br>
+<b>Importante:</b> os resultados são estatísticas desta amostra histórica. Uma combinação positiva no treino ou na validação não é garantia de previsão da próxima rodada.
+</div>
 </div>
 
 <div class="card"><div class="label">Histórico</div><div id="history" class="history" style="margin-top:9px"></div></div>
@@ -152,18 +169,63 @@ function parseTargets(){
 function runAnalysis(){
  const maxT=Math.min(10,Math.max(1,Math.floor(num('maxTrigger',6))));
  const targets=parseTargets();
- const stake=num('stake',1),start=num('bank',100);
- let html='',count=0;
- for(let t=1;t<=maxT;t++)for(const target of targets){
-   const r=simulate(data,t,target,stake,start);
-   const cls=r.net>0?'positive':r.net<0?'negative':'neutral';
-   html+=`<tr><td>${t}</td><td>${target.toFixed(2)}x</td><td>${r.entries}</td><td>${r.wins}</td><td>${r.losses}</td><td>${r.hitRate.toFixed(2)}%</td><td>${money(r.bal)}</td><td class="${cls}">${r.net>=0?'+':''}${money(r.net)}</td><td>${r.maxStreak}</td><td>${money(r.maxDD)}</td></tr>`;
-   count++;
- }
- el('analysisRows').innerHTML=html;
- el('analysisMsg').textContent=`${count} combinações analisadas em ${data.length} rodadas.`;
-}
+ const stake=num('stake',1),startBank=num('bank',100);
+ const pct=Math.min(90,Math.max(50,Math.floor(num('trainPct',70))));
+ const mode=el('analysisMode').value;
 
+ if(!data.length){
+   el('analysisRows').innerHTML='';
+   el('analysisMsg').textContent='Adicione resultados antes de analisar.';
+   return;
+ }
+ if(!targets.length){
+   el('analysisRows').innerHTML='';
+   el('analysisMsg').textContent='Digite pelo menos uma meta válida.';
+   return;
+ }
+
+ const split=Math.max(1,Math.min(data.length-1,Math.floor(data.length*pct/100)));
+ const train=data.slice(0,split);
+ const validation=data.slice(split);
+ let htmlRows='',count=0;
+
+ for(let t=1;t<=maxT;t++){
+   for(const target of targets){
+     const fullR=simulate(data,t,target,stake,startBank);
+     const trainR=simulate(train,t,target,stake,startBank);
+     const valR=simulate(validation,t,target,stake,startBank);
+
+     const cls=valR.net>0?'positive':valR.net<0?'negative':'neutral';
+
+     if(mode==='full'){
+       htmlRows+=`<tr>
+         <td>${t}</td><td>${target.toFixed(2)}x</td>
+         <td>${fullR.entries}</td><td>${fullR.wins}</td>
+         <td>${fullR.losses}</td><td>${fullR.hitRate.toFixed(2)}%</td>
+         <td>${money(fullR.bal)}</td><td class="${fullR.net>0?'positive':fullR.net<0?'negative':'neutral'}">${fullR.net>=0?'+':''}${money(fullR.net)}</td>
+         <td>${fullR.maxStreak}</td><td>${money(fullR.maxDD)}</td>
+       </tr>`;
+     }else{
+       htmlRows+=`<tr>
+         <td>${t}</td><td>${target.toFixed(2)}x</td>
+         <td>${trainR.entries}</td><td>${trainR.wins}</td>
+         <td>${valR.entries}</td><td>${valR.wins}</td>
+         <td>${valR.hitRate.toFixed(2)}%</td>
+         <td>${money(valR.bal)}</td>
+         <td class="${cls}">${valR.net>=0?'+':''}${money(valR.net)}</td>
+         <td>${valR.maxStreak}</td><td>${money(valR.maxDD)}</td>
+       </tr>`;
+     }
+     count++;
+   }
+ }
+
+ el('analysisRows').innerHTML=htmlRows;
+ el('analysisMsg').textContent =
+   mode==='full'
+   ? `${count} combinações analisadas em ${data.length} rodadas.`
+   : `${count} combinações: treino ${train.length} rodadas (${pct}%) + validação ${validation.length} rodadas (${100-pct}%).`;
+}
 function render(){
  const target=num('target',2),stake=num('stake',1),start=num('bank',100);
  let bal=start,entries=0,wins=0,losses=0,streak=0,maxStreak=0,rows='';
@@ -224,7 +286,7 @@ function resetAll(){
  }
 }
 
-['bank','stake','trigger','target','maxTrigger','targets'].forEach(id=>el(id).addEventListener('input',render));
+['bank','stake','trigger','target','maxTrigger','targets','trainPct','analysisMode'].forEach(id=>el(id).addEventListener('input',render));
 render();
 </script>
 </body>
